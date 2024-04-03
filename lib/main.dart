@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'getstate.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,87 +17,87 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      /*应用名称*/
-      title: 'Flutter Demo',
-
-      /*主题配置*/
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-
-      /*应用首页路由 */
-      // home: const MyHomePage(title: 'Flutter 实战2'),
-      home:  GetStateObjectRoute(),
-    );
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        /*外部必须套一个Navigator*/
+        home: Container(child: FocusTestRoute()));
   }
 }
 
-/**
- * 继承有状态的组件
- */
-class MyHomePage extends StatefulWidget {
+class FocusTestRoute extends StatefulWidget {
+  const FocusTestRoute({Key? key}) : super(key: key);
 
-  final String title;
-
-  /**
-   * 构造方法
-   */
-  const MyHomePage({super.key, required this.title});
-
-
-  /**
-   * 创建状态
-   */
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _FocusTestRouteState createState() => _FocusTestRouteState();
 }
 
-/**
- * 我继承状态返回 MyHomePage 组件
- */
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  var title = "";
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+class _FocusTestRouteState extends State<FocusTestRoute> {
+  FocusNode focusNode1 = FocusNode();
+  FocusNode focusNode2 = FocusNode();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+    return Material(
+        child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: <Widget>[
+          TextField(
+            autofocus: true,
+            focusNode: focusNode1, //关联focusNode1
+            toolbarOptions: const ToolbarOptions(
+              selectAll: true,
+              copy: true,
+              paste: true,
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            decoration: const InputDecoration(labelText: "input1"),
+          ),
+          TextField(
+            focusNode: focusNode2, //关联focusNode2
+            decoration: const InputDecoration(labelText: "input2"),
+          ),
+          Builder(
+            builder: (ctx) {
+              return Column(
+                children: <Widget>[
+                  ElevatedButton(
+                    child: const Text("移动焦点"),
+                    onPressed: () {
+                      //将焦点从第一个TextField移到第二个TextField
+                      FocusScope.of(context).requestFocus(focusNode2);
+                    },
+                  ),
+                  ElevatedButton(
+                    child: const Text("隐藏键盘"),
+                    onPressed: () {
+                      // 当所有编辑框都失去焦点时键盘就会收起
+                      focusNode1.unfocus();
+                      focusNode2.unfocus();
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
+
+          const Text("自定义下划线颜色"),
+          const TextField(
+            decoration: InputDecoration(
+              labelText: "请输入用户名",
+              prefixIcon: Icon(Icons.person),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.green),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.red),
+              ),
             ),
-            Text(title)
-          ],
-        ),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => {
-          _incrementCounter(),
-          setState(() {
-            title = "aaa";
-          })
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
-    );
+    ));
   }
 }
