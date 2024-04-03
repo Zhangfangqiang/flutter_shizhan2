@@ -17,87 +17,90 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        /*外部必须套一个Navigator*/
-        home: Container(child: FocusTestRoute()));
+      /*应用名称*/
+      title: 'Flutter Demo',
+      /*主题配置*/
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      /*应用首页路由 */
+      home: ParentWidget(),
+    );
   }
 }
 
-class FocusTestRoute extends StatefulWidget {
-  const FocusTestRoute({Key? key}) : super(key: key);
-
+/**
+ * 拥有完整状态的组件
+ */
+class ParentWidget extends StatefulWidget {
   @override
-  _FocusTestRouteState createState() => _FocusTestRouteState();
+  _ParentWidgetState createState() => _ParentWidgetState();
 }
 
-class _FocusTestRouteState extends State<FocusTestRoute> {
-  FocusNode focusNode1 = FocusNode();
-  FocusNode focusNode2 = FocusNode();
+/**
+ * ParentWidget 的实现
+ */
+class _ParentWidgetState extends State<ParentWidget> {
+  bool _active = false;       //添加一个状态
+
+  /**
+   * 创建一个修改这个状态的方法
+   */
+  void _handleTapboxChanged(bool newValue) {
+    setState(() {
+      _active = newValue;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-        child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: <Widget>[
-          TextField(
-            autofocus: true,
-            focusNode: focusNode1, //关联focusNode1
-            toolbarOptions: const ToolbarOptions(
-              selectAll: true,
-              copy: true,
-              paste: true,
-            ),
-            decoration: const InputDecoration(labelText: "input1"),
-          ),
-          TextField(
-            focusNode: focusNode2, //关联focusNode2
-            decoration: const InputDecoration(labelText: "input2"),
-          ),
-          Builder(
-            builder: (ctx) {
-              return Column(
-                children: <Widget>[
-                  ElevatedButton(
-                    child: const Text("移动焦点"),
-                    onPressed: () {
-                      //将焦点从第一个TextField移到第二个TextField
-                      FocusScope.of(context).requestFocus(focusNode2);
-                    },
-                  ),
-                  ElevatedButton(
-                    child: const Text("隐藏键盘"),
-                    onPressed: () {
-                      // 当所有编辑框都失去焦点时键盘就会收起
-                      focusNode1.unfocus();
-                      focusNode2.unfocus();
-                    },
-                  ),
-                ],
-              );
-            },
-          ),
-
-          const Text("自定义下划线颜色"),
-          const TextField(
-            decoration: InputDecoration(
-              labelText: "请输入用户名",
-              prefixIcon: Icon(Icons.person),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.green),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.red),
-              ),
-            ),
-          ),
-        ],
+    return Container(
+      child: TapboxB(
+        active: _active,
+        onChanged: _handleTapboxChanged,
       ),
-    ));
+    );
+  }
+}
+
+/**
+ * 没有完整状态的组件
+ */
+class TapboxB extends StatelessWidget {
+  /**
+   * 构造方法
+   * 给 active 一个默认值
+   * onChanged 是一个必须填写的方法
+   */
+  TapboxB({Key? key, this.active = false, required this.onChanged}) : super(key: key);
+
+  final bool active;
+  final ValueChanged<bool> onChanged;
+
+  /**
+   * 给onChanged 方法包一层
+   */
+  void _handleTap() {
+    onChanged(!active);
+  }
+
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _handleTap,
+      child: Container(
+        child: Center(
+          child: Text(
+            active ? 'Active' : 'Inactive',
+            style: TextStyle(fontSize: 32.0, color: Colors.white),
+          ),
+        ),
+        width: 200.0,
+        height: 200.0,
+        decoration: BoxDecoration(
+          color: active ? Colors.lightGreen[700] : Colors.grey[600],
+        ),
+      ),
+    );
   }
 }
