@@ -15,6 +15,9 @@ void main() {
   );
 }
 
+/**
+ * 数据内容
+ */
 class Counter with ChangeNotifier, DiagnosticableTreeMixin {
   int _count = 0;
   int get count => _count;
@@ -24,6 +27,15 @@ class Counter with ChangeNotifier, DiagnosticableTreeMixin {
     notifyListeners();
   }
 
+  /**
+   * debugFillProperties 方法是 DiagnosticableTreeMixin 类提供的一个方法，用于填充诊断信息。
+   * 在 Flutter 中，开发者可以使用诊断工具来检查和调试 Widget 树的结构和状态，以便更好地理解应用程
+   * 序的行为和问题。当开发者使用 Flutter DevTools 或其他诊断工具检查应用程序时，它们可以调用对象的
+   * debugFillProperties 方法，以便在诊断信息中显示有关对象的一些重要属性和状态。这些信息可以帮助开
+   * 发者更好地理解对象的状态和行为，并且有助于快速定位和解决问题。在上面的代码中，debugFillProperties
+   * 方法被覆盖，并使用 DiagnosticPropertiesBuilder 对象将 count 属性添加到诊断信息中。这样，
+   * 在使用诊断工具检查 Counter 对象时，将显示其 count 属性的值，从而更好地了解 Counter 对象的状态。
+   */
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
