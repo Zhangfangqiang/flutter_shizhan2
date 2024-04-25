@@ -41,20 +41,25 @@ dependencies:
   provider: ^6.1.2
   dio: ^5.4.3+1
   web_socket_channel: ^2.4.5
+  fluro: ^2.0.5
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   english_words: ^4.0.0
+  flutter_lints: ^3.0.0
+  path_provider: ^2.0.2
+  json_serializable: ^6.7.1
+  cupertino_icons: ^1.0.2
+  flutter_easyrefresh: ^2.2.1
+  cached_network_image: ^3.0.0
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
-  path_provider: ^2.0.2
-  json_serializable: ^6.7.1
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -68,8 +73,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - imgs/sea.png
-    - imgs/avatar.png
+    - imgs/
+    - imgs/grid-buttons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
